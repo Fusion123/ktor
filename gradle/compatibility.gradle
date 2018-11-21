@@ -1,13 +1,12 @@
-apply from: rootProject.file('gradle/platform.gradle')
 
 configurations {
     binaryCompatibility
 }
 
 dependencies {
-    def excludeList = ['ktor-client-tests', 'ktor-client-features', 'ktor-client-js', 'ktor-client-json-tests'].toSet()
+    def excludeList = ['ktor-client-tests', 'ktor-client-js', 'ktor-client-json-tests'].toSet()
     def projects = [].toSet()
-    def queue = [project(':ktor-client')]
+    def queue = [project(":ktor-client")]
 
     while (!queue.isEmpty()) {
         def project = queue.remove(queue.size() - 1) as Project
@@ -16,10 +15,7 @@ dependencies {
         }
     }
 
-    binaryCompatibility projects.findAll {
-        !excludeList.contains(it.name) &&
-            platformOf(it) == 'jvm'
-    }
+    binaryCompatibility projects.findAll { !excludeList.contains(it.name) }
 }
 
 def buildList = {
