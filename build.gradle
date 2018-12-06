@@ -65,7 +65,6 @@ allprojects {
 //    apply from: rootProject.file("gradle/dokka.gradle")
     if (project.name != 'binary-compatibility-validator') {
         apply from: rootProject.file("gradle/utility.gradle")
-    if (project.name != 'binary-compatibility-validator') {
         apply from: rootProject.file('gradle/publish.gradle')
     }
 
@@ -99,6 +98,4 @@ allprojects {
     }
 
     configurations { testOutput }
-
-    tasks.build.dependsOn(["sourceJar", "emptyJar"])
 }

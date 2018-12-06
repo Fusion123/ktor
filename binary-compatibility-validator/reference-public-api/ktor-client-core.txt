@@ -31,6 +31,9 @@ public final class io/ktor/client/HttpClientConfig {
 	public final fun setUseDefaultTransformers (Z)V
 }
 
+public abstract interface annotation class io/ktor/client/HttpClientDsl : java/lang/annotation/Annotation {
+}
+
 public abstract interface class io/ktor/client/HttpClientEngineContainer {
 	public abstract fun getFactory ()Lio/ktor/client/engine/HttpClientEngineFactory;
 }
@@ -53,6 +56,7 @@ public final class io/ktor/client/call/DoubleReceiveException : java/lang/Illega
 
 public final class io/ktor/client/call/HttpClientCall : java/io/Closeable, kotlinx/coroutines/CoroutineScope {
 	public fun close ()V
+	public final fun getClient ()Lio/ktor/client/HttpClient;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public final fun getRequest ()Lio/ktor/client/request/HttpRequest;
 	public final fun getResponse ()Lio/ktor/client/response/HttpResponse;
@@ -118,7 +122,9 @@ public final class io/ktor/client/call/UtilsJvmKt {
 
 public final class io/ktor/client/call/UtilsKt {
 	public static final fun call (Lio/ktor/client/HttpClient;Lio/ktor/client/request/HttpRequestBuilder;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun call (Lio/ktor/client/HttpClient;Lio/ktor/http/Url;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun call (Lio/ktor/client/HttpClient;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun call$default (Lio/ktor/client/HttpClient;Lio/ktor/http/Url;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun call$default (Lio/ktor/client/HttpClient;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
@@ -283,6 +289,33 @@ public abstract interface class io/ktor/client/features/Sender {
 	public abstract fun execute (Lio/ktor/client/request/HttpRequestBuilder;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/ktor/client/features/UserAgent {
+	public static final field Feature Lio/ktor/client/features/UserAgent$Feature;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getAgent ()Ljava/lang/String;
+}
+
+public final class io/ktor/client/features/UserAgent$Config {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAgent ()Ljava/lang/String;
+	public final fun setAgent (Ljava/lang/String;)V
+}
+
+public final class io/ktor/client/features/UserAgent$Feature : io/ktor/client/features/HttpClientFeature {
+	public fun getKey ()Lio/ktor/util/AttributeKey;
+	public fun install (Lio/ktor/client/features/UserAgent;Lio/ktor/client/HttpClient;)V
+	public synthetic fun install (Ljava/lang/Object;Lio/ktor/client/HttpClient;)V
+	public fun prepare (Lkotlin/jvm/functions/Function1;)Lio/ktor/client/features/UserAgent;
+	public synthetic fun prepare (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public final class io/ktor/client/features/UserAgentKt {
+	public static final fun BrowserUserAgent (Lio/ktor/client/HttpClientConfig;)V
+	public static final fun CurlUserAgent (Lio/ktor/client/HttpClientConfig;)V
+}
+
 public final class io/ktor/client/features/cookies/AcceptAllCookiesStorage : io/ktor/client/features/cookies/CookiesStorage {
 	public fun <init> ()V
 	public fun addCookie (Lio/ktor/http/Url;Lio/ktor/http/Cookie;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -331,6 +364,10 @@ public final class io/ktor/client/features/cookies/HttpCookiesKt {
 	public static final fun get (Ljava/util/List;Ljava/lang/String;)Lio/ktor/http/Cookie;
 }
 
+public final class io/ktor/client/features/observer/DelegatedCallKt {
+	public static final fun wrapWithContent (Lio/ktor/client/call/HttpClientCall;Lkotlinx/coroutines/io/ByteReadChannel;Z)Lio/ktor/client/call/HttpClientCall;
+}
+
 public final class io/ktor/client/features/observer/ResponseObserver {
 	public static final field Feature Lio/ktor/client/features/observer/ResponseObserver$Feature;
 	public fun <init> (Lkotlin/jvm/functions/Function2;)V
@@ -355,6 +392,10 @@ public final class io/ktor/client/features/observer/ResponseObserverKt {
 
 public final class io/ktor/client/request/BuildersKt {
 	public static final fun request (Lkotlin/jvm/functions/Function1;)Lio/ktor/client/request/HttpRequestBuilder;
+}
+
+public final class io/ktor/client/request/BuildersWithUrlKt {
+	public static final fun url (Lio/ktor/client/request/HttpRequestBuilder;Lio/ktor/http/Url;)V
 }
 
 public abstract class io/ktor/client/request/ClientUpgradeContent : io/ktor/http/content/OutgoingContent$NoContent {
@@ -604,18 +645,30 @@ public final class io/ktor/client/utils/CIOKt {
 
 public final class io/ktor/client/utils/CacheControl {
 	public static final field INSTANCE Lio/ktor/client/utils/CacheControl;
-	public final fun getMAX_AGE ()Ljava/lang/String;
-	public final fun getMAX_STALE ()Ljava/lang/String;
-	public final fun getMIN_FRESH ()Ljava/lang/String;
-	public final fun getMUST_REVALIDATE ()Ljava/lang/String;
-	public final fun getNO_CACHE ()Ljava/lang/String;
-	public final fun getNO_STORE ()Ljava/lang/String;
-	public final fun getNO_TRANSFORM ()Ljava/lang/String;
-	public final fun getONLY_IF_CACHED ()Ljava/lang/String;
-	public final fun getPRIVATE ()Ljava/lang/String;
-	public final fun getPROXY_REVALIDATE ()Ljava/lang/String;
-	public final fun getPUBLIC ()Ljava/lang/String;
-	public final fun getS_MAX_AGE ()Ljava/lang/String;
+	public static final field MAX_AGE Ljava/lang/String;
+	public static final field MAX_STALE Ljava/lang/String;
+	public static final field MIN_FRESH Ljava/lang/String;
+	public static final field MUST_REVALIDATE Ljava/lang/String;
+	public static final field NO_CACHE Ljava/lang/String;
+	public static final field NO_STORE Ljava/lang/String;
+	public static final field NO_TRANSFORM Ljava/lang/String;
+	public static final field ONLY_IF_CACHED Ljava/lang/String;
+	public static final field PRIVATE Ljava/lang/String;
+	public static final field PROXY_REVALIDATE Ljava/lang/String;
+	public static final field PUBLIC Ljava/lang/String;
+	public static final field S_MAX_AGE Ljava/lang/String;
+	public final synthetic fun getMAX_AGE ()Ljava/lang/String;
+	public final synthetic fun getMAX_STALE ()Ljava/lang/String;
+	public final synthetic fun getMIN_FRESH ()Ljava/lang/String;
+	public final synthetic fun getMUST_REVALIDATE ()Ljava/lang/String;
+	public final synthetic fun getNO_CACHE ()Ljava/lang/String;
+	public final synthetic fun getNO_STORE ()Ljava/lang/String;
+	public final synthetic fun getNO_TRANSFORM ()Ljava/lang/String;
+	public final synthetic fun getONLY_IF_CACHED ()Ljava/lang/String;
+	public final synthetic fun getPRIVATE ()Ljava/lang/String;
+	public final synthetic fun getPROXY_REVALIDATE ()Ljava/lang/String;
+	public final synthetic fun getPUBLIC ()Ljava/lang/String;
+	public final synthetic fun getS_MAX_AGE ()Ljava/lang/String;
 }
 
 public final class io/ktor/client/utils/ContentKt {
