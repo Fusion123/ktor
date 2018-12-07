@@ -2,11 +2,12 @@ kotlin {
     targets {
         List<org.jetbrains.kotlin.gradle.plugin.KotlinTarget> current = []
 
-        if (project.ext.ideaActive) {
-            current.add(posix)
+        if (!project.ext.ideaActive) {
+            if (project.ext.isLinuxHost) current = [linuxX64]
+            if (project.ext.isMacosHost) current = [macosX64, iosX64, iosArm64]
+            if (project.ext.isWinHost) current = [mingwX64]
         } else {
-            current = [iosX64, iosArm64, macosX64]
-            if (project.ext.isLinuxHost) current = [linuxX64, mingwX64]
+            current = [posix]
         }
 
         configure(current) {

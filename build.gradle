@@ -89,11 +89,14 @@ allprojects {
                 progressiveMode = true
                 experimentalAnnotations.each { useExperimentalAnnotation(it) }
 
-//                kotlinOptions.freeCompilerArgs += ["-Xdump-declarations-to=${buildDir}/visibilities.json"]
                 if (project.path.startsWith(":ktor-server:ktor-server") && project.name != "ktor-server-core") {
                     useExperimentalAnnotation("io.ktor.server.engine.EngineAPI")
                 }
             }
+        }
+
+        tasks.findByPath("compileKotlinJvm").each {
+            it.kotlinOptions.freeCompilerArgs += ["-Xdump-declarations-to=${buildDir}/visibilities.json"]
         }
     }
 
